@@ -1,6 +1,7 @@
 from flask import Flask, request
 from structs import *
 from queue import *
+import random
 import json
 import sys
 import numpy
@@ -69,7 +70,6 @@ def bot():
     player = Player(p["Health"], p["MaxHealth"], Point(x,y),
                     Point(house["X"], house["Y"]),p['Score'],
                     p["CarriedResources"], p["CarryingCapacity"])
-    print('score: %s' % (player.Score))
     # Map
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
@@ -92,13 +92,10 @@ def bot():
     for tile in deserialized_map[0]:
         if tile.Content == TileContent.Resource:
             tilesWithContent.append(tile)
-    print('Position:')
-    print(Point(pos['X'], pos['Y']))
     playerPoint = Point(pos['X'], pos['Y'])
     return gatherResources(player, playerPoint, deserialized_map)
 def goTo(start, goal, map):
     if isCloseByOne(start, goal):
-        print('return goal')
         return create_move_action(goal)
     frontiers = Queue()
     pStart = (start.X, start.Y)
@@ -109,7 +106,6 @@ def goTo(start, goal, map):
     frontiers.put(pStart)
     cameFrom = {}
     cameFrom[pStart] = None
-    print('start: (%d, %d)  goal: (%d, %d)' % (start.X, start.Y, goal.X, goal.Y))
 
     while not frontiers.empty():
         current = frontiers.get()
@@ -129,12 +125,11 @@ def goTo(start, goal, map):
             # pathMoves.append(getMove(cameFrom[current], current))
             pathMoves.append(cameFrom[current])
             if cameFrom[current] == pStart:
-                print('current: %s' % (str(current)))
                 return create_move_action(Point(current[0], current[1]))
             current = cameFrom[current]
     else:
-        print('wth')
-        return None
+        closedTiles = neighbours(pStart, map)
+        return create_move_action(random.choice(closedTiles))
 
 def getMove(origin, goal):
     return Point(goal.X - origin.X, goal.Y - origin.Y)
@@ -174,18 +169,9 @@ def getCloseTilesToAttack(pos, map):
                     neighbours.append((tile.X, tile.Y))
     return neighbours
 
-def printTiles(tiles):
-    for tile in tiles:
-        print('Content :%s PosX:%d PosY:%d' % (tile.Content, tile.X, tile.Y))
-
-def printTilesWithDistance(tiles, playerPos):
-    for tile in tiles:
-        print('Content :%s PosX:%d PosY:%d Distance:%d' % (tile.Content, tile.X, tile.Y, Point(tile.X, tile.Y).Distance(playerPos, Point(tile.X, tile.Y))))
-
 def gatherResources(player, playerPosition, tiles):
     # return checkNearestTiles(playerPosition, tiles)
     if player.CarriedRessources >= player.CarryingCapacity:
-        print('GOING HOME BOOOIIISS')
         return goTo(playerPosition, player.HouseLocation, tiles)
     else:
         return checkNearestTiles(playerPosition, tiles)
@@ -201,10 +187,8 @@ def checkNearestTiles(player, map):
     closestResource = Point(tiles[0].X, tiles[0].Y)
     #On check si il est à un de distance:
     if isCloseByOne(player, closestResource):
-        print('Breaking rocks boys!')
         return create_collect_action(closestResource)
     else:
-        print('I\'M TRYING FOR CHRIST\'S SAKE')
         return goTo(player, closestResource, map)
 
 def isCloseByOne(player, tile):
