@@ -67,27 +67,13 @@ def bot():
     y = pos["Y"]
     house = p["HouseLocation"]
     player = Player(p["Health"], p["MaxHealth"], Point(x,y),
-                    Point(house["X"], house["Y"]),0,
+                    Point(house["X"], house["Y"]),p['Score'],
                     p["CarriedResources"], p["CarryingCapacity"])
-
+    print('score: %s' % (player.Score))
     # Map
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
 
-    mapArr = []
-    for x in range(0,len(deserialized_map)):
-        sys.stdout.write(str(x) + "|")
-        row = []
-        for y in range(0, len(deserialized_map[x])):
-            if deserialized_map[x][y].Content == 0:
-                sys.stdout.write("█")
-            if deserialized_map[x][y].Content == 1:
-                sys.stdout.write("A")
-            if deserialized_map[x][y].Content == 2:
-                sys.stdout.write("B")
-            if deserialized_map[x][y].Content == 3:
-                sys.stdout.write("B")
-        sys.stdout.write("\n")
 
     otherPlayers = []
 
@@ -117,6 +103,7 @@ def goTo(start, goal, map):
     frontiers = Queue()
     pStart = (start.X, start.Y)
     pGoal = (goal.X, goal.Y)
+    #Check if a player or a wall is nearby
     frontiers.put(pStart)
     cameFrom = {}
     cameFrom[pStart] = None
@@ -168,7 +155,6 @@ def neighbours(pos, map):
                 if tile.X == x and tile.Y + 1 == y:
                     neighbours.append((tile.X, tile.Y))
     return neighbours
-
 
 
 def printTiles(tiles):
