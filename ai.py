@@ -65,10 +65,9 @@ def bot():
     x = pos["X"]
     y = pos["Y"]
     house = p["HouseLocation"]
-    for players in map_json["OtherPlayers"]:
-        player_info = players["Value"]
-        p_pos = player_info["Position"]
-        player_info = PlayerInfo(player_info["Health"], player_info["MaxHealth"], Point(p_pos["X"], p_pos["Y"]))
+    player = Player(p["Health"], p["MaxHealth"], Point(x,y),
+                    Point(house["X"], house["Y"]), p["Score"],
+                    p["CarriedResources"], p["CarryingCapacity"])
 
     # Map
     serialized_map = map_json["CustomSerializedMap"]
