@@ -1,6 +1,6 @@
 from flask import Flask, request
 from structs import *
-from queue import *
+from multiprocessing import Queue
 import random
 import json
 import sys
