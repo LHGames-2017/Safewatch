@@ -74,36 +74,40 @@ def bot():
     deserialized_map = deserialize_map(serialized_map)
 
     mapArr = []
+    player_not_in_house = True
     for x in range(0,len(deserialized_map)):
         row = []
         for y in range(0, len(deserialized_map[x])):
+            if deserialized_map[x][y].X == pos['X'] and deserialized_map[x][y].Y == pos['Y']:
+                sys.stdout.write("P")
+                player_in_house = False
+                pass
             if deserialized_map[x][y].Content == 0:
                 sys.stdout.write("█")
             if deserialized_map[x][y].Content == 1:
                 sys.stdout.write("▒")
-            if deserialized_map[x][y].Content == 2:
+            if deserialized_map[x][y].Content == 2 and player_in_house:
                 sys.stdout.write("░")
             if deserialized_map[x][y].Content == 3:
-                sys.stdout.write("X")
+                sys.stdout.write("╣")
             if deserialized_map[x][y].Content == 4:
-                sys.stdout.write("X")
+                sys.stdout.write("z")
             if deserialized_map[x][y].Content == 5:
-                sys.stdout.write("X")
+                sys.stdout.write("¢")
             if deserialized_map[x][y].Content == 6:
-                sys.stdout.write("X")
-            if deserialized_map[x][y].Content == 7:
-                sys.stdout.write("X")
+                sys.stdout.write("ã")
         sys.stdout.write("\n")
-
     otherPlayers = []
-    print("█ = Tile")
+    print("█ = Empty")
     print("▒ = Wall")
     print("░ = House")
-    print("X = Lava")
+    print("╣ = Lava")
+    print("z = Resource")
+    print("¢ = Shop")
+    print("ã = Player")
     def Map(x, y):
         return deserialized_map[x][y].Content
 
-    print(Map(6,0))
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
