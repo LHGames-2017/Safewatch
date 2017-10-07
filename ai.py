@@ -75,21 +75,31 @@ def bot():
 
     mapArr = []
     for x in range(0,len(deserialized_map)):
-        sys.stdout.write(str(x) + "|")
         row = []
         for y in range(0, len(deserialized_map[x])):
             if deserialized_map[x][y].Content == 0:
                 sys.stdout.write("█")
             if deserialized_map[x][y].Content == 1:
-                sys.stdout.write("A")
+                sys.stdout.write("▒")
             if deserialized_map[x][y].Content == 2:
-                sys.stdout.write("B")
+                sys.stdout.write("░")
             if deserialized_map[x][y].Content == 3:
-                sys.stdout.write("B")
+                sys.stdout.write("X")
+            if deserialized_map[x][y].Content == 4:
+                sys.stdout.write("X")
+            if deserialized_map[x][y].Content == 5:
+                sys.stdout.write("X")
+            if deserialized_map[x][y].Content == 6:
+                sys.stdout.write("X")
+            if deserialized_map[x][y].Content == 7:
+                sys.stdout.write("X")
         sys.stdout.write("\n")
 
     otherPlayers = []
-
+    print("█ = Tile")
+    print("▒ = Wall")
+    print("░ = House")
+    print("X = Lava")
     def Map(x, y):
         return deserialized_map[x][y].Content
 
@@ -116,8 +126,8 @@ def bot():
     print(Point(pos['X'], pos['Y']))
     playerPoint = Point(pos['X'], pos['Y'])
     return gatherResources(player, playerPoint, deserialized_map)
+
 def goTo(start, goal, map):
-    print(map)
     frontiers = Queue()
     frontiers.put(start)
 
