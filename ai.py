@@ -73,6 +73,7 @@ def bot():
     deserialized_map = deserialize_map(serialized_map)
 
     for x in range(0,len(deserialized_map)):
+        sys.stdout.write(str(x) + "|")
         for y in range(0, len(deserialized_map[x])):
             if deserialized_map[x][y].Content == 0:
                 sys.stdout.write("█")
@@ -85,6 +86,11 @@ def bot():
         sys.stdout.write("\n")
 
     otherPlayers = []
+
+    def Map(x, y):
+        return deserialized_map[x][y].Content
+
+    print(Map(6,0))
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
