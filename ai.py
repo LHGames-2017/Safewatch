@@ -70,6 +70,21 @@ def bot():
     # Map
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
+    # print(deserialize_map)
+    # for x in range(0,len(map)):
+    #   for y in range(0,len(map[x])):
+    #       if map[x][y] == 25 && map[]:
+    #           pass
+    #       if 0 in map[x][y]:
+    #           sys.stdout.write("█")
+    #       if 1 in map[x][y]:
+    #           sys.stdout.write("A")
+    #       if 2 in map[x][y]:
+    #           sys.stdout.write("B")
+    #       if 3 in map[x][y]:
+    #           sys.stdout.write("C")
+    #   sys.stdout.write("\n")
+
 
     otherPlayers = []
 
@@ -87,14 +102,12 @@ def bot():
     return create_move_action(Point(0,1))
 
 @app.route("/", methods=["POST"])
-cor = [0,0]
 def reponse():
-    if cor[1] == 40:
-        cor[0] = cor[0] + cor[1]
-    else:
-        cor[1] = cor[1] + 1
-    create_collect_action(cor)
+    # print(request.form)
+    """
+    Point d'entree appelle par le GameServer
+    """
     return bot()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000)
+    app.run(host="0.0.0.0", port=8080)
