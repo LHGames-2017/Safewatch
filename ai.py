@@ -185,7 +185,6 @@ def checkNearestTiles(player, map):
     tiles.sort(key=lambda t: player.Distance(player, Point(t.X, t.Y)), reverse=False)
 
     closestResource = Point(tiles[0].X, tiles[0].Y)
-    #On check si il est à un de distance:
     if isCloseByOne(player, closestResource):
         return create_collect_action(closestResource)
     else:
@@ -196,10 +195,6 @@ def isCloseByOne(player, tile):
 
 @app.route("/", methods=["POST"])
 def reponse():
-    # print(request.form)
-    """
-    Point d'entree appelle par le GameServer
-    """
     return bot()
 
 if __name__ == "__main__":
