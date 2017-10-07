@@ -115,7 +115,7 @@ def bot():
     print('Position:')
     print(Point(pos['X'], pos['Y']))
     playerPoint = Point(pos['X'], pos['Y'])
-    return gatherResources(playerPoint, tilesWithContent, deserialized_map[0])
+    return gatherResources(player, playerPoint, deserialized_map)
 def goTo(start, goal, map):
     print(map)
     frontiers = Queue()
@@ -170,7 +170,9 @@ def printTilesWithDistance(tiles, playerPos):
 
 def gatherResources(player, playerPosition, tiles):
     if player.CarriedRessources >= 1000:
-        return goTo(playerPosition, player.HouseLocation, )
+        return goTo(playerPosition, player.HouseLocation, tiles)
+    else:
+        return checkNearestTiles(playerPosition, tiles)
 def checkNearestTiles(player, tiles):
     #print('first (%d, %d)' % (tiles[0].X, tiles[0].Y))
     tiles.sort(key=lambda t: player.Distance(player, Point(t.X, t.Y)), reverse=False)
