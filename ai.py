@@ -1,6 +1,5 @@
 from flask import Flask, request
 from structs import *
-from queue import *
 import json
 import sys
 import numpy
@@ -73,25 +72,24 @@ def bot():
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
 
-    # for x in range(0,len(deserialized_map)):
-    #     sys.stdout.write(str(x) + "|")
-    #     for y in range(0, len(deserialized_map[x])):
-    #         if deserialized_map[x][y].Content == 0:
-    #             sys.stdout.write("█")
-    #         if deserialized_map[x][y].Content == 1:
-    #             sys.stdout.write("A")
-    #         if deserialized_map[x][y].Content == 2:
-    #             sys.stdout.write("B")
-    #         if deserialized_map[x][y].Content == 3:
-    #             sys.stdout.write("B")
-    #     sys.stdout.write("\n")
+    for x in range(0,len(deserialized_map)):
+        sys.stdout.write(str(x) + "|")
+        for y in range(0, len(deserialized_map[x])):
+            if deserialized_map[x][y].Content == 0:
+                sys.stdout.write("█")
+            if deserialized_map[x][y].Content == 1:
+                sys.stdout.write("A")
+            if deserialized_map[x][y].Content == 2:
+                sys.stdout.write("B")
+            if deserialized_map[x][y].Content == 3:
+                sys.stdout.write("B")
+        sys.stdout.write("\n")
 
     otherPlayers = []
 
     def Map(x, y):
-        return deserialized_map[x-15][y].X
+        return deserialized_map[x-15][y-17].Content
 
-    print(Map(0,0))
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
@@ -106,70 +104,6 @@ def bot():
 
     # return decision
     return create_move_action(Point(0,1))
-def goTo(start, goal, map):
-    print(map)
-    frontiers = Queue()
-    frontiers.put(start)
-
-    cameFrom = {}
-    cameFrom[start] = None
-
-    while not frontiers.empty():
-        current = frontiers.get()
-        for next in neighbors(current, map):
-            if next not in cameFrom:
-                cameFrom[next] = current
-            if next == goal:
-                break
-    pathMoves = []
-    if goal in cameFrom:
-        current = goal
-        while cameFrom[current] is not None:
-            pathMoves.append(getMove(cameFrom[current], current))
-            current = cameFrom[current]
-        pathMoves.reverse()
-        return pathMoves[0]
-    else:
-        return None
-
-def getMove(origin, goal):
-    return Point(goal.X - origin.X, goal.Y - origin.Y)
-
-#For GoTo local search
-def neighbors(pos, grid):
-    result = []
-    rangex = len(grid)
-    rangey = (len(grid[0]))
-    if 0 <= pos.Y - 1 < rangey and grid[pos.X][pos.Y - 1] == 1:
-        result.append((pos.X, pos.Y - 1))
-    if 0 <= pos.Y + 1 < rangey and grid[pos.X][pos.Y + 1] == 1:
-        result.append((pos.X, pos.Y + 1))
-    if 0 <= pos.X + 1 < rangex and grid[pos.X + 1][pos.Y] == 1:
-        result.append((pos.X + 1, pos.Y))
-    return result
-
-
-
-def printTiles(tiles):
-    for tile in tiles:
-        print('Content :%s PosX:%d PosY:%d' % (tile.Content, tile.X, tile.Y))
-
-def printTilesWithDistance(tiles, playerPos):
-    for tile in tiles:
-        print('Content :%s PosX:%d PosY:%d Distance:%d' % (tile.Content, tile.X, tile.Y, Point(tile.X, tile.Y).Distance(playerPos, Point(tile.X, tile.Y))))
-
-def checkNearestTiles(player, tiles):
-    #print('first (%d, %d)' % (tiles[0].X, tiles[0].Y))
-    tiles.sort(key=lambda t: player.Distance(player, Point(t.X, t.Y)), reverse=False)
-    closestResource = tiles[0]
-    #On check si il est à un de distance:
-    if isCloseByOne(player, closestResource):
-        return create_collect_action(closestResource)
-    else:
-        return goTo(player, closestResource)
-
-def isCloseByOne(player, tile):
-    return (abs(player.X - tile.X) + abs(player.Y - tile.Y)) == 1
 
 @app.route("/", methods=["POST"])
 def reponse():
