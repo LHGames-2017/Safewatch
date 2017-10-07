@@ -87,10 +87,13 @@ def bot():
     return create_move_action(Point(0,1))
 
 @app.route("/", methods=["POST"])
+cor = [0,0]
 def reponse():
-    """
-    Point d'entree appelle par le GameServer
-    """
+    if cor[1] == 40:
+        cor[0] = cor[0] + cor[1]
+    else:
+        cor[1] = cor[1] + 1
+    create_collect_action(cor)
     return bot()
 
 if __name__ == "__main__":
