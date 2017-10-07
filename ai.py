@@ -72,25 +72,25 @@ def bot():
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
 
-    for x in range(0,len(deserialized_map)):
-        sys.stdout.write(str(x) + "|")
-        for y in range(0, len(deserialized_map[x])):
-            if deserialized_map[x][y].Content == 0:
-                sys.stdout.write("█")
-            if deserialized_map[x][y].Content == 1:
-                sys.stdout.write("A")
-            if deserialized_map[x][y].Content == 2:
-                sys.stdout.write("B")
-            if deserialized_map[x][y].Content == 3:
-                sys.stdout.write("B")
-        sys.stdout.write("\n")
+    # for x in range(0,len(deserialized_map)):
+    #     sys.stdout.write(str(x) + "|")
+    #     for y in range(0, len(deserialized_map[x])):
+    #         if deserialized_map[x][y].Content == 0:
+    #             sys.stdout.write("█")
+    #         if deserialized_map[x][y].Content == 1:
+    #             sys.stdout.write("A")
+    #         if deserialized_map[x][y].Content == 2:
+    #             sys.stdout.write("B")
+    #         if deserialized_map[x][y].Content == 3:
+    #             sys.stdout.write("B")
+    #     sys.stdout.write("\n")
 
     otherPlayers = []
 
     def Map(x, y):
-        return deserialized_map[x][y].Content
+        return deserialized_map[x-15][y].X
 
-    print(Map(6,0))
+    print(Map(0,0))
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
