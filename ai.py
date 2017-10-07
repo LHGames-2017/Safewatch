@@ -1,6 +1,7 @@
 from flask import Flask, request
 from structs import *
 import json
+import sys
 import numpy
 
 app = Flask(__name__)
@@ -34,7 +35,7 @@ def deserialize_map(serialized_map):
     serialized_map = serialized_map[1:]
     rows = serialized_map.split('[')
     column = rows[0].split('{')
-    deserialized_map = [[Tile() for x in range(40)] for y in range(40)]
+    deserialized_map = [[Tile() for x in range(20)] for y in range(20)]
     for i in range(len(rows) - 1):
         column = rows[i + 1].split('{')
 
@@ -57,7 +58,7 @@ def bot():
     # Player info
 
     encoded_map = map_json.encode()
-    map_json = json.loads(encoded_map)
+    map_json = json.loads(encoded_map.decode("utf-8"))
     p = map_json["Player"]
     pos = p["Position"]
     x = pos["X"]
@@ -70,27 +71,25 @@ def bot():
     # Map
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
-    # print(deserialize_map)
-    # for x in range(0,len(map)):
-    #   for y in range(0,len(map[x])):
-    #       if map[x][y] == 25 && map[]:
-    #           pass
-    #       if 0 in map[x][y]:
-    #           sys.stdout.write("█")
-    #       if 1 in map[x][y]:
-    #           sys.stdout.write("A")
-    #       if 2 in map[x][y]:
-    #           sys.stdout.write("B")
-    #       if 3 in map[x][y]:
-    #           sys.stdout.write("C")
-    #   sys.stdout.write("\n")
 
+    for x in range(0,len(deserialized_map)):
+        for y in range(0, len(deserialized_map[x])):
+            if deserialized_map[x][y].Content == 0:
+                sys.stdout.write("█")
+            if deserialized_map[x][y].Content == 1:
+                sys.stdout.write("A")
+            if deserialized_map[x][y].Content == 2:
+                sys.stdout.write("B")
+            if deserialized_map[x][y].Content == 3:
+                sys.stdout.write("B")
+        sys.stdout.write("\n")
 
     otherPlayers = []
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
             player_info = player_dict[player_name]
+            print(player_info)
             p_pos = player_info["Position"]
             player_info = PlayerInfo(player_info["Health"],
                                      player_info["MaxHealth"],
