@@ -74,40 +74,21 @@ def bot():
     deserialized_map = deserialize_map(serialized_map)
 
     mapArr = []
-    player_not_in_house = True
     for x in range(0,len(deserialized_map)):
+        sys.stdout.write(str(x) + "|")
         row = []
         for y in range(0, len(deserialized_map[x])):
-            if deserialized_map[x][y].X == pos['X'] and deserialized_map[x][y].Y == pos['Y']:
-                sys.stdout.write("P")
-                player_in_house = False
-                pass
             if deserialized_map[x][y].Content == 0:
                 sys.stdout.write("█")
             if deserialized_map[x][y].Content == 1:
-                sys.stdout.write("▒")
-            if deserialized_map[x][y].Content == 2 and player_in_house:
-                sys.stdout.write("░")
+                sys.stdout.write("A")
+            if deserialized_map[x][y].Content == 2:
+                sys.stdout.write("B")
             if deserialized_map[x][y].Content == 3:
-                sys.stdout.write("╣")
-            if deserialized_map[x][y].Content == 4:
-                sys.stdout.write("z")
-            if deserialized_map[x][y].Content == 5:
-                sys.stdout.write("¢")
-            if deserialized_map[x][y].Content == 6:
-                sys.stdout.write("ã")
+                sys.stdout.write("B")
         sys.stdout.write("\n")
-    otherPlayers = []
-    print("█ = Empty")
-    print("▒ = Wall")
-    print("░ = House")
-    print("╣ = Lava")
-    print("z = Resource")
-    print("¢ = Shop")
-    print("ã = Player")
-    def Map(x, y):
-        return deserialized_map[x][y].Content
 
+    otherPlayers = []
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
@@ -130,11 +111,9 @@ def bot():
     print(Point(pos['X'], pos['Y']))
     playerPoint = Point(pos['X'], pos['Y'])
     return gatherResources(player, playerPoint, deserialized_map)
-
 def goTo(start, goal, map):
     frontiers = Queue()
     frontiers.put(start)
-
     cameFrom = {}
     cameFrom[start] = None
 
@@ -143,17 +122,22 @@ def goTo(start, goal, map):
         for next in neighbours(current, map):
             if next not in cameFrom:
                 cameFrom[next] = current
+                frontiers.put(next)
             if next == goal:
                 break
     pathMoves = []
     if goal in cameFrom:
         current = goal
         while cameFrom[current] is not None:
-            #pathMoves.append(getMove(cameFrom[current], current))
+            #removed since we return absolute position
+            # pathMoves.append(getMove(cameFrom[current], current))
             pathMoves.append(cameFrom[current])
             current = cameFrom[current]
-        return pathMoves[-1]
+            print('path')
+            print(cameFrom[current])
+        return create_move_action(pathMoves[-1])
     else:
+        print('wth')
         return None
 
 def getMove(origin, goal):
@@ -162,14 +146,17 @@ def getMove(origin, goal):
 #For GoTo local search
 def neighbours(pos, map):
     neighbours = []
-    sides = []
-    sides.append(Tile(TileContent.Resource, pos.X - 1, pos.Y))
-    sides.append(Tile(TileContent.Resource, pos.X + 1, pos.Y))
-    sides.append(Tile(TileContent.Resource, pos.X, pos.Y - 1))
-    sides.append(Tile(TileContent.Resource, pos.X, pos.Y + 1))
-    for side in sides:
-        if side in map:
-            neighbours.append(side)
+    for tiles in map:
+        for tile in tiles:
+            if (tile.Content != None):
+                if tile.X == pos.X - 1 and tile.Y == pos.Y:
+                    neighbours.append(Point(tile.X, tile.Y))
+                if tile.X == pos.X + 1 and tile.Y == pos.Y:
+                    neighbours.append(Point(tile.X, tile.Y))
+                if tile.X == pos.X and tile.Y - 1 == pos.Y:
+                    neighbours.append(Point(tile.X, tile.Y))
+                if tile.X == pos.X and tile.Y + 1 == pos.Y:
+                    neighbours.append(Point(tile.X, tile.Y))
     return neighbours
 
 
