@@ -105,9 +105,6 @@ def bot():
     print("z = Resource")
     print("¢ = Shop")
     print("ã = Player")
-    def Map(x, y):
-        return deserialized_map[x][y].Content
-
 
     for player_dict in map_json["OtherPlayers"]:
         for player_name in player_dict.keys():
