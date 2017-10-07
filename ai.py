@@ -184,7 +184,7 @@ def printTilesWithDistance(tiles, playerPos):
 
 def gatherResources(player, playerPosition, tiles):
     # return checkNearestTiles(playerPosition, tiles)
-    if player.CarriedRessources >= 1000:
+    if player.CarriedRessources >= player.CarryingCapacity:
         print('GOING HOME BOOOIIISS')
         return goTo(playerPosition, player.HouseLocation, tiles)
     else:
