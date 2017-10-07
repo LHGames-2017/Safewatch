@@ -3,8 +3,6 @@ from structs import *
 from multiprocessing import Queue
 import random
 import json
-import sys
-import numpy
 
 app = Flask(__name__)
 
@@ -129,7 +127,8 @@ def goTo(start, goal, map):
             current = cameFrom[current]
     else:
         closedTiles = neighbours(pStart, map)
-        return create_move_action(random.choice(closedTiles))
+        randTile = random.choice(closedTiles)
+        return create_move_action(Point(randTile[0], randTile[1]))
 
 def getMove(origin, goal):
     return Point(goal.X - origin.X, goal.Y - origin.Y)
