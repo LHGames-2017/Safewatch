@@ -66,7 +66,7 @@ def bot():
     y = pos["Y"]
     house = p["HouseLocation"]
     player = Player(p["Health"], p["MaxHealth"], Point(x,y),
-                    Point(house["X"], house["Y"]), 0,
+                    Point(house["X"], house["Y"]), p["Score"],
                     p["CarriedResources"], p["CarryingCapacity"])
 
     # Map
@@ -124,7 +124,7 @@ def goTo(start, goal, map):
         current = frontiers.get()
         #print('currentX:%d, currentY:%d' %(current.X, current.Y))
         for next in neighbours(current, map):
-            print('next : (%d, %d)' % (next[0], next[1]))
+            # print('next : (%d, %d)' % (next[0], next[1]))
             if next not in cameFrom:
                 cameFrom[next] = current
                 frontiers.put(next)
@@ -210,4 +210,4 @@ def reponse():
     return bot()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080, debug=True)
