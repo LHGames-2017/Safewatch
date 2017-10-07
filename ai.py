@@ -18,7 +18,7 @@ def create_attack_action(target):
     return create_action("AttackAction", target)
 
 def create_collect_action(target):
-    print('target:%s' % (str(target)))
+    #print('target:%s' % (str(target)))
     return create_action("CollectAction", target)
 
 def create_steal_action(target):
@@ -104,6 +104,8 @@ def goTo(start, goal, map):
     pStart = (start.X, start.Y)
     pGoal = (goal.X, goal.Y)
     #Check if a player or a wall is nearby
+    for enemy in getCloseTilesToAttack(pStart, map):
+        return create_attack_action(Point(enemy[0], enemy[1]))
     frontiers.put(pStart)
     cameFrom = {}
     cameFrom[pStart] = None
@@ -117,7 +119,6 @@ def goTo(start, goal, map):
                 cameFrom[next] = current
                 frontiers.put(next)
             if (next[0] == pGoal[0]) and (next[1] == pGoal[1]):
-                print('found')
                 break
     pathMoves = []
 
@@ -156,6 +157,22 @@ def neighbours(pos, map):
                     neighbours.append((tile.X, tile.Y))
     return neighbours
 
+def getCloseTilesToAttack(pos, map):
+    neighbours = []
+    x = pos[0]
+    y = pos[1]
+    for tiles in map:
+        for tile in tiles:
+            if (tile.Content in [TileContent.Wall, TileContent.Player]):
+                if tile.X == x - 1 and tile.Y == y:
+                    neighbours.append((tile.X, tile.Y))
+                if tile.X == x + 1 and tile.Y == y:
+                    neighbours.append((tile.X, tile.Y))
+                if tile.X == x and tile.Y - 1 == y:
+                    neighbours.append((tile.X, tile.Y))
+                if tile.X == x and tile.Y + 1 == y:
+                    neighbours.append((tile.X, tile.Y))
+    return neighbours
 
 def printTiles(tiles):
     for tile in tiles:
@@ -168,6 +185,7 @@ def printTilesWithDistance(tiles, playerPos):
 def gatherResources(player, playerPosition, tiles):
     # return checkNearestTiles(playerPosition, tiles)
     if player.CarriedRessources >= 1000:
+        print('GOING HOME BOOOIIISS')
         return goTo(playerPosition, player.HouseLocation, tiles)
     else:
         return checkNearestTiles(playerPosition, tiles)
@@ -183,10 +201,10 @@ def checkNearestTiles(player, map):
     closestResource = Point(tiles[0].X, tiles[0].Y)
     #On check si il est à un de distance:
     if isCloseByOne(player, closestResource):
-        print('close by one')
-        print(tiles[0])
+        print('Breaking rocks boys!')
         return create_collect_action(closestResource)
     else:
+        print('I\'M TRYING FOR CHRIST\'S SAKE')
         return goTo(player, closestResource, map)
 
 def isCloseByOne(player, tile):
