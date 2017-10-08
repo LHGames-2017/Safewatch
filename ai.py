@@ -3,7 +3,7 @@ from structs import *
 from multiprocessing import Queue
 import random
 import json
-#k
+
 app = Flask(__name__)
 
 def create_action(action_type, target):
@@ -68,6 +68,7 @@ def bot():
     player = Player(p["Health"], p["MaxHealth"], Point(x,y),
                     Point(house["X"], house["Y"]),p['Score'],
                     p["CarriedResources"], p["CarryingCapacity"])
+    print('score: %s' % (player.Score))
     # Map
     serialized_map = map_json["CustomSerializedMap"]
     deserialized_map = deserialize_map(serialized_map)
@@ -90,10 +91,13 @@ def bot():
     for tile in deserialized_map[0]:
         if tile.Content == TileContent.Resource:
             tilesWithContent.append(tile)
+    print('Position:')
+    print(Point(pos['X'], pos['Y']))
     playerPoint = Point(pos['X'], pos['Y'])
     return gatherResources(player, playerPoint, deserialized_map)
 def goTo(start, goal, map):
     if isCloseByOne(start, goal):
+        print('return goal')
         return create_move_action(goal)
     frontiers = Queue()
     pStart = (start.X, start.Y)
@@ -104,6 +108,7 @@ def goTo(start, goal, map):
     frontiers.put(pStart)
     cameFrom = {}
     cameFrom[pStart] = None
+    print('start: (%d, %d)  goal: (%d, %d)' % (start.X, start.Y, goal.X, goal.Y))
 
     while not frontiers.empty():
         current = frontiers.get()
@@ -123,6 +128,7 @@ def goTo(start, goal, map):
             # pathMoves.append(getMove(cameFrom[current], current))
             pathMoves.append(cameFrom[current])
             if cameFrom[current] == pStart:
+                print('current: %s' % (str(current)))
                 return create_move_action(Point(current[0], current[1]))
             current = cameFrom[current]
     else:
